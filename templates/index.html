@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube LLM App</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='styles.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Ask Questions About a YouTube Video</h1>
+      <form id="query-form">
+        <input
+          type="text"
+          id="video_url"
+          name="video_url"
+          placeholder="Enter YouTube URL"
+          required
+        />
+        <input
+          type="text"
+          id="query"
+          name="query"
+          placeholder="Enter your question"
+          required
+        />
+        <button type="submit">Submit</button>
+      </form>
+      <h3>Response:</h3>
+      <p id="response"></p>
+    </div>
+
+    <script>
+      document
+        .getElementById("query-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          let videoUrl = document.getElementById("video_url").value;
+          let query = document.getElementById("query").value;
+
+          fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `video_url=${encodeURIComponent(
+              videoUrl
+            )}&query=${encodeURIComponent(query)}`,
+          })
+            .then((response) => response.json())
+            .then(
+              (data) =>
+                (document.getElementById("response").innerText = data.response)
+            )
+            .catch((error) => console.error("Error:", error));
+        });
+    </script>
+  </body>
+</html>
